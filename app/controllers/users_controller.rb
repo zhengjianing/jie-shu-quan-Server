@@ -25,7 +25,8 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params)
+    @group = get_or_create_group_by_email(user_params[:email])
+    @user = @group.users.create(user_params)
 
     respond_to do |format|
       if @user.save
@@ -65,20 +66,26 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def user_params
-      params.require(:user).permit(:user_name, :email, :password).merge(access_token: random_string)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def user_params
+    params.require(:user).permit(:user_name, :email, :password).merge(access_token: random_string)
+  end
 
-    def random_string
-      randstring = ""
-      chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
-      1.upto(20) { |i| randstring << chars[rand(chars.size-1)] }
-      return randstring
-    end
+  def random_string
+    randstring = ""
+    chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+    1.upto(20) { |i| randstring << chars[rand(chars.size-1)] }
+    return randstring
+  end
+
+  def get_or_create_group_by_email email
+    user_group_name = email.split('@')[1].split('.')[0]
+    group = Group.where(group_name: user_group_name).first
+    group.nil? ? Group.create(group_name: user_group_name) : group
+  end
 end
