@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json do
-          render json: @user
+          render json: {user_id: @user.id, access_token: @user.access_token}
         end
       else
         format.html { render :new }
@@ -72,6 +72,13 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:user_name, :email, :password)
+      params.require(:user).permit(:user_name, :email, :password).merge(access_token: random_string)
+    end
+
+    def random_string
+      randstring = ""
+      chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+      1.upto(20) { |i| randstring << chars[rand(chars.size-1)] }
+      return randstring
     end
 end
