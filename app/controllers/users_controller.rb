@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json do
-          render json: {user_id: @user.id, access_token: @user.access_token}
+          render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token}
         end
       else
         format.html { render :new }
