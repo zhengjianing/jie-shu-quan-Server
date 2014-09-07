@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :users
+
   resources :books
 
   get 'books_by_user/:user_id' => 'books#get_books_by_user', :as => :get_books
