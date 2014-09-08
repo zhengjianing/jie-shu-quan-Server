@@ -12,20 +12,22 @@ class BooksController < ApplicationController
 
   # POST /books.json
   def create
+    p '----------------'
+    p book_params
 
-    if has_no_permission?(params[:user_id].to_i, params[:access_token])
+    if has_no_permission?(params[:user_id], params[:access_token])
       render json: {error: "User authentication failed."}, status: :unauthorized
       return
     end
 
-    if already_has_book_for_user(params[:douban_book_id], params[:user_id].to_i)
+    if already_has_book_for_user(params[:douban_book_id], params[:user_id])
       render json: {error: "Already has the book: #{params[:douban_book_id]} for the user: #{params[:user_id]}."}, status: :unprocessable_entity
       return
     end
 
     @book = Book.new(book_params)
     if @book.save
-      render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id, available: @book.available}
+      render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id.to_s, available: @book.available}
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -52,8 +54,7 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    #params.require(:book).permit(:douban_book_id, :user_id, :available)
-    params.require(:book).permit(:douban_book_id, :user_id)
+    params.require(:book).permit(:douban_book_id, :user_id, :available)
   end
 
   def has_no_permission?(user_id, access_token)
