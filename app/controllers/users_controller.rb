@@ -35,7 +35,7 @@ class UsersController < ApplicationController
     @user = User.where({email: params[:email], password: params[:password]}).first
 
     if @user.nil?
-      render json: @user.errors, status: :Unauthorized
+      render json: @user.errors, status: 404
     else
       render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
     end
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
 
     @user = User.find(user_id)
     if @user.nil?
-      render json: @user.errors, status: :Unauthorized
+      render json: @user.errors, status: 404
     else
       books = Book.where({user_id: user_id}).map do |book|
         {book_id: book.book_id,
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
 
     @user = User.find(user_id)
     if @user.nil?
-      render json: @user.errors
+      render json: @user.errors, status: 404
     else
       friends = @user.group.users.map do |user|
         if user.id != user_id
@@ -77,16 +77,6 @@ class UsersController < ApplicationController
 
       results = {user_id: user_id, friends: friends}
       render json: results
-    end
-  end
-
-# DELETE /users/1.json
-  def destroy
-    @user = User.find(params[:id])
-    @user.destroy
-    respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 

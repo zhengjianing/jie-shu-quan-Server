@@ -10,10 +10,17 @@ Rails.application.routes.draw do
   get 'friends_by_user/:user_id' => 'users#get_friends_by_user', :as => :get_friends
 
 
-  resources :groups
-  resources :books
+# books routes
+  get 'books/:password' => 'books#index'
+
+  post 'add_book' => "books#create"
 
   get 'users_by_book/:book_id' => 'books#get_users_by_book', :as => :get_users
+
+# groups routes
+  get 'groups/:password' => 'groups#index'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
