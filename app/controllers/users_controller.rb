@@ -9,7 +9,8 @@ class UsersController < ApplicationController
             user_id: user.id,
             user_name: user.user_name,
             email: user.email,
-            group_name: user.group.group_name
+            group_name: user.group.group_name,
+            access_token: user.access_token
         }
       end
       render json: @users
