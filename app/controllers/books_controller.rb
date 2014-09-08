@@ -67,16 +67,6 @@ class BooksController < ApplicationController
     end
   end
 
-  def get_books_by_user
-    user_id = params[:user_id]
-    books = Book.where({user_id: user_id}).map do |book|
-      { book_id: book.book_id,
-        available: book.available}
-    end
-    results = {user_id: user_id, books: books}
-    render json: results
-  end
-
   def get_users_by_book
     book_id = params[:book_id]
     users = Book.where({book_id: book_id}).map do |book|

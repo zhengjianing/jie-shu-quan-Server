@@ -1,63 +1,88 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
   skip_before_filter :verify_authenticity_token
 
-  # GET /users
-  # GET /users.json
+  # GET /users/999
   def index
-    @users = User.all
+    if params[:password] == "999"
+      @users = User.all.map do |user|
+        {
+            user_id: user.id,
+            user_name: user.user_name,
+            email: user.email,
+            group_name: user.group.group_name
+        }
+      end
+      render json: @users
+    else
+      render json: {error: 'wrong password'}
+    end
   end
 
-  # GET /users/1
-  # GET /users/1.json
-  def show
-  end
-
-  # GET /users/new
-  def new
-    @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
-  end
-
-  # POST /users
-  # POST /users.json
-  def create
+  # POST /register
+  def register
     @group = get_or_create_group_by_email(user_params[:email])
     @user = @group.users.create(user_params)
 
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json do
-          render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+    if @user.save
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+# POST /login
+  def login
+    @user = User.where({email: params[:email], password: params[:password]}).first
+
+    if @user.nil?
+      render json: @user.errors, status: :Unauthorized
+    else
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+    end
+  end
+
+# GET /books_by_user/123
+  def get_books_by_user
+    user_id = params[:user_id]
+
+    @user = User.find(user_id)
+    if @user.nil?
+      render json: @user.errors, status: :Unauthorized
+    else
+      books = Book.where({user_id: user_id}).map do |book|
+        {book_id: book.book_id,
+         available: book.available}
+      end
+      results = {user_id: user_id, books: books}
+      render json: results
+    end
+  end
+
+# GET /friends_by_user/123
+  def get_friends_by_user
+    user_id = params[:user_id]
+
+    @user = User.find(user_id)
+    if @user.nil?
+      render json: @user.errors
+    else
+      friends = @user.group.users.map do |user|
+        if user.id != user_id
+          {
+              friend_name: user.user_name,
+              friend_email: user.email
+          }
         end
-      else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
+
+      results = {user_id: user_id, friends: friends}
+      render json: results
     end
   end
 
-  # PATCH/PUT /users/1
-  # PATCH/PUT /users/1.json
-  def update
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
+# DELETE /users/1.json
   def destroy
+    @user = User.find(params[:id])
     @user.destroy
     respond_to do |format|
       format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
@@ -66,12 +91,8 @@ class UsersController < ApplicationController
   end
 
   private
-  # Use callbacks to share common setup or constraints between actions.
-  def set_user
-    @user = User.find(params[:id])
-  end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+# Never trust parameters from the scary internet, only allow the white list through.
   def user_params
     params.require(:user).permit(:user_name, :email, :password).merge(access_token: random_string)
   end
@@ -88,4 +109,5 @@ class UsersController < ApplicationController
     group = Group.where(group_name: user_group_name).first
     group.nil? ? Group.create(group_name: user_group_name) : group
   end
+
 end
