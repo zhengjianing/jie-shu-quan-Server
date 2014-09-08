@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   post 'add_book' => "books#create"
 
-  get 'users_by_book/:book_id' => 'books#get_users_by_book', :as => :get_users
+  get 'users_by_book/:douban_book_id' => 'books#get_users_by_book', :as => :get_users
 
 # groups routes
   get 'groups/:password' => 'groups#index'

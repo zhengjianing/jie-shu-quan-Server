@@ -18,14 +18,14 @@ class BooksController < ApplicationController
       return
     end
 
-    if already_has_book_for_user(params[:book_id], params[:user_id].to_i)
-      render json: {error: "Already has the book: #{params[:book_id]} for the user: #{params[:user_id]}."}, status: :unprocessable_entity
+    if already_has_book_for_user(params[:douban_book_id], params[:user_id].to_i)
+      render json: {error: "Already has the book: #{params[:douban_book_id]} for the user: #{params[:user_id]}."}, status: :unprocessable_entity
       return
     end
 
     @book = Book.new(book_params)
     if @book.save
-      render json: {book_id: @book.book_id, user_id: @book.user_id, available: @book.available}
+      render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id, available: @book.available}
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -33,11 +33,11 @@ class BooksController < ApplicationController
 
   # GET /users_by_book/123
   def get_users_by_book
-    book_id = params[:book_id]
-    @books = Book.where({book_id: book_id})
+    douban_book_id = params[:douban_book_id]
+    @books = Book.where({douban_book_id: douban_book_id})
 
     if @books.empty?
-      render json: {error: "No book with douban_book_id: #{book_id} found!"}, status: 404
+      render json: {error: "No book with douban_book_id: #{douban_book_id} found!"}, status: 404
       return
     end
 
@@ -45,22 +45,22 @@ class BooksController < ApplicationController
       {user_id: book.user_id,
        available: book.available}
     end
-    results = {book_id: book_id, users: users}
+    results = {douban_book_id: douban_book_id, users: users}
     render json: results
   end
 
   private
 
   def book_params
-    params.require(:book).permit(:book_id, :user_id, :available)
+    params.require(:book).permit(:douban_book_id, :user_id, :available)
   end
 
   def has_no_permission?(user_id, access_token)
     User.where({id: user_id, access_token: access_token}).empty?
   end
 
-  def already_has_book_for_user(book_id, user_id)
-    Book.where({book_id: book_id, user_id: user_id}).size > 0
+  def already_has_book_for_user(douban_book_id, user_id)
+    Book.where({douban_book_id: douban_book_id, user_id: user_id}).size > 0
   end
 
 end

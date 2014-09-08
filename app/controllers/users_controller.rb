@@ -51,7 +51,7 @@ class UsersController < ApplicationController
       render json: @user.errors, status: 404
     else
       books = Book.where({user_id: user_id}).map do |book|
-        {book_id: book.book_id,
+        {douban_book_id: book.douban_book_id,
          available: book.available}
       end
       results = {user_id: user_id, books: books}
