@@ -10,11 +10,8 @@ class BooksController < ApplicationController
     end
   end
 
-  # POST /books.json
+  # POST /add_book
   def create
-    p '----------------'
-    p book_params
-
     if has_no_permission?(params[:user_id], params[:access_token])
       render json: {error: "User authentication failed."}, status: :unauthorized
       return
@@ -26,6 +23,29 @@ class BooksController < ApplicationController
     end
 
     @book = Book.new(book_params)
+    if @book.save
+      render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id.to_s, available: @book.available}
+    else
+      render json: @book.errors, status: :unprocessable_entity
+    end
+  end
+
+  # POST /change_status
+  def update
+    if has_no_permission?(params[:user_id], params[:access_token])
+      render json: {error: "User authentication failed."}, status: :unauthorized
+      return
+    end
+
+    douban_book_id = params[:douban_book_id]
+    @book = Book.where({douban_book_id: douban_book_id}).first
+
+    if @book.nil?
+      render json: {error: "Can't find douban_book_id with: #{douban_book_id}"}, status: 404
+      return
+    end
+
+    @book.available = params[:available]
     if @book.save
       render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id.to_s, available: @book.available}
     else
