@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     @user = @group.users.create(user_params)
 
     if @user.save
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+      render json: {authMethod: 'register', user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -36,9 +36,9 @@ class UsersController < ApplicationController
     @user = User.where({email: params[:email], password: params[:password]}).first
 
     if @user.nil?
-      render json: @user.errors, status: 404
+      render json: @user.errors, status: :unprocessable_entity
     else
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+      render json: {authMethod: 'login', user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
     end
   end
 
