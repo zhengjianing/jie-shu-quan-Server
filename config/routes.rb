@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   post 'register' => 'users#register'
   post 'login' => 'users#login'
+  post 'find_password' => 'users#find_password'
 
   get 'books_by_user/:user_id' => 'users#get_books_by_user', :as => :get_books
   get 'friends_by_user/:user_id' => 'users#get_friends_by_user', :as => :get_friends

@@ -49,6 +49,20 @@ class UsersController < ApplicationController
     end
   end
 
+  # POST /find_password
+  def find_password
+    user_id = params[:user_id]
+    @user = User.find(user_id)
+
+    if @user.nil?
+      render json: @user.errors, status: 404
+    else
+      p '-----------sending email------------'
+
+      render json: {result: "Email already sent to user: #{@user.email}"}
+    end
+  end
+
 # GET /books_by_user/123
   def get_books_by_user
     user_id = params[:user_id]
