@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   get 'books/:password' => 'books#index'
 
   post 'add_book' => "books#create"
-  post 'change_status' => "books#update"
+  put 'remove_book' => "books#remove"
+  put 'change_status' => "books#update"
 
   get 'users_by_book/:douban_book_id' => 'books#get_users_by_book', :as => :get_users
 
