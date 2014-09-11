@@ -32,16 +32,18 @@ class BooksController < ApplicationController
 
   # POST /change_status
   def update
-    if has_no_permission?(params[:user_id], params[:access_token])
+    user_id = params[:user_id]
+    douban_book_id = params[:douban_book_id]
+
+    if has_no_permission?(user_id, params[:access_token])
       render json: {error: "User authentication failed."}, status: :unauthorized
       return
     end
 
-    douban_book_id = params[:douban_book_id]
-    @book = Book.where({douban_book_id: douban_book_id}).first
+    @book = Book.where({douban_book_id: douban_book_id, user_id: user_id}).first
 
     if @book.nil?
-      render json: {error: "Can't find douban_book_id with: #{douban_book_id}"}, status: 404
+      render json: {error: "Can't find douban_book_id with: #{douban_book_id} for user: #{user_id}"}, status: 404
       return
     end
 
