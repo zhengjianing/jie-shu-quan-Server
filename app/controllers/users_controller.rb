@@ -22,10 +22,17 @@ class UsersController < ApplicationController
   # POST /register
   def register
     @group = get_or_create_group_by_email(user_params[:email])
-    @user = @group.users.create(user_params)
+
+    if @group.nil?
+      @user = User.new(user_params)
+      @group_name = nil
+    else
+      @user = @group.users.create(user_params)
+      @group_name = @user.group.group_name
+    end
 
     if @user.save
-      render json: {authMethod: 'register', user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @user.group.group_name}
+      render json: {authMethod: 'register', user_id: @user.id.to_s, user_name: @user.user_name, access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -97,8 +104,17 @@ class UsersController < ApplicationController
 
   def get_or_create_group_by_email email
     user_group_name = email.split('@')[1].split('.')[0]
+
+    if is_a_personal_email?(user_group_name)
+      return nil
+    end
+
     group = Group.where(group_name: user_group_name).first
     group.nil? ? Group.create(group_name: user_group_name) : group
+  end
+
+  def is_a_personal_email? name
+    ['126', '163', 'gmail', 'qq', 'sina', 'yahoo', 'sohu'].include?(name)
   end
 
 end
