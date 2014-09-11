@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def index
     if params[:password] == "999"
       @users = User.all.map do |user|
-        group_name = user.group.nil? ? nil : user.group.group_name
+        group_name = user.group.nil? ? "" : user.group.group_name
         {
             user_id: user.id,
             user_name: user.user_name,
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
 
     if @group.nil?
       @user = User.new(user_params)
-      @group_name = nil
+      @group_name = ""
     else
       @user = @group.users.create(user_params)
       @group_name = @user.group.group_name
@@ -46,7 +46,8 @@ class UsersController < ApplicationController
     if @user.nil?
       render json: @user.errors, status: :unprocessable_entity
     else
-      render json: {auth_method: 'login', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, access_token: @user.access_token, group_name: @user.group.group_name}
+      group_name = @user.group.nil? ? "" : @user.group.group_name
+      render json: {auth_method: 'login', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, access_token: @user.access_token, group_name: group_name}
     end
   end
 
