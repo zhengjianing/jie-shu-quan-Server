@@ -5,11 +5,12 @@ class UsersController < ApplicationController
   def index
     if params[:password] == "999"
       @users = User.all.map do |user|
+        group_name = user.group.nil? ? nil : user.group.group_name
         {
             user_id: user.id,
             user_name: user.user_name,
             email: user.email,
-            group_name: user.group.group_name,
+            group_name: group_name,
             access_token: user.access_token
         }
       end
@@ -32,7 +33,7 @@ class UsersController < ApplicationController
     end
 
     if @user.save
-      render json: {auth_method: 'register', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, @user.book_count: "0", access_token: @user.access_token, group_name: @group_name}
+      render json: {auth_method: 'register', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: "0", access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
