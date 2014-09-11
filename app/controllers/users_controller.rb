@@ -92,7 +92,8 @@ class UsersController < ApplicationController
         if user.id != user_id
           {
               friend_name: user.user_name,
-              friend_email: user.email
+              friend_email: user.email,
+              book_count: Book.where({user_id: user_id}).count.to_s
           }
         end
       end
