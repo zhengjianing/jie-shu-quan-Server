@@ -57,7 +57,7 @@ class UsersController < ApplicationController
     if @user.nil?
       render json: @user.errors, status: 404
     else
-      p '-----------sending email------------'
+      UserMailer.find_password_for_user(@user).deliver
 
       render json: {result: "Email already sent to user: #{@user.email}"}
     end
