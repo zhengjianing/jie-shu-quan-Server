@@ -52,7 +52,7 @@ class UsersController < ApplicationController
   # POST /find_password
   def find_password
     user_id = params[:user_id]
-    @user = User.find(user_id)
+    @user = User.find(user_id.to_i)
 
     if @user.nil?
       render json: @user.errors, status: 404
