@@ -32,7 +32,7 @@ class UsersController < ApplicationController
     end
 
     if @user.save
-      render json: {authMethod: 'register', user_id: @user.id.to_s, user_name: @user.user_name, book_count: "0", access_token: @user.access_token, group_name: @group_name}
+      render json: {auth_method: 'register', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, @user.book_count: "0", access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -45,7 +45,7 @@ class UsersController < ApplicationController
     if @user.nil?
       render json: @user.errors, status: :unprocessable_entity
     else
-      render json: {authMethod: 'login', user_id: @user.id.to_s, user_name: @user.user_name, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, access_token: @user.access_token, group_name: @user.group.group_name}
+      render json: {auth_method: 'login', user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, access_token: @user.access_token, group_name: @user.group.group_name}
     end
   end
 
