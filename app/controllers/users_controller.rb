@@ -27,13 +27,15 @@ class UsersController < ApplicationController
     if @group.nil?
       @user = User.new(user_params)
       @group_name = ""
+      @friend_count = 0
     else
       @user = @group.users.create(user_params)
       @group_name = @user.group.group_name
+      @friend_count = @user.group.users.size - 1
     end
 
     if @user.save
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: "0", access_token: @user.access_token, group_name: @group_name}
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: "0", friend_count: @friend_count.to_s, access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -47,7 +49,8 @@ class UsersController < ApplicationController
       render json: @user.errors, status: :unprocessable_entity
     else
       group_name = @user.group.nil? ? "" : @user.group.group_name
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, access_token: @user.access_token, group_name: group_name}
+      friend_count = @user.group.nil? ? 0 : @user.group.users.size - 1
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, friend_count: friend_count.to_s, access_token: @user.access_token, group_name: group_name}
     end
   end
 
