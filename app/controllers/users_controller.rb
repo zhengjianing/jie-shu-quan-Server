@@ -76,10 +76,7 @@ class UsersController < ApplicationController
     if @user.nil?
       render json: @user.errors, status: 404
     else
-      books = Book.where({user_id: user_id}).map do |book|
-        {douban_book_id: book.douban_book_id,
-         available: book.available}
-      end
+      books = Book.where({user_id: user_id})
       results = {user_id: user_id, books: books}
       render json: results
     end

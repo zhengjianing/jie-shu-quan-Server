@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140908092352) do
+ActiveRecord::Schema.define(version: 20140914133855) do
 
   create_table "books", force: true do |t|
     t.string   "douban_book_id"
@@ -19,6 +19,14 @@ ActiveRecord::Schema.define(version: 20140908092352) do
     t.boolean  "available"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
+    t.string   "authors"
+    t.string   "imageHref"
+    t.string   "description"
+    t.string   "authorInfo"
+    t.string   "price"
+    t.string   "publisher"
+    t.string   "publishDate"
   end
 
   create_table "groups", force: true do |t|

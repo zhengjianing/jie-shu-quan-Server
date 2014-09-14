@@ -24,7 +24,7 @@ class BooksController < ApplicationController
 
     @book = Book.new(book_params)
     if @book.save
-      render json: {douban_book_id: @book.douban_book_id, user_id: @book.user_id.to_s, available: @book.available}
+      render json: {book: @book}
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -100,7 +100,8 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:douban_book_id, :user_id, :available)
+    params.require(:book).permit(:douban_book_id, :user_id, :available, :name, :authors, :imageHref,
+    :description, :authorInfo, :price, :publisher, :publishDate)
   end
 
   def has_no_permission?(user_id, access_token)
