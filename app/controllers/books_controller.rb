@@ -100,8 +100,8 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:douban_book_id, :user_id, :available, :name, :authors, :imageHref,
-    :description, :authorInfo, :price, :publisher, :publishDate)
+    params.require(:book).permit(:douban_book_id, :user_id, :available, :name, :authors, :image_href,
+    :description, :author_info, :price, :publisher, :publish_date)
   end
 
   def has_no_permission?(user_id, access_token)
