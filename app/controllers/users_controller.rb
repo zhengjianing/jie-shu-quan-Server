@@ -102,7 +102,7 @@ class UsersController < ApplicationController
           friend_id: user.id.to_s,
           friend_name: user.user_name,
           friend_email: user.email,
-          book_count: Book.where({user_id: user_id}).count.to_s
+          book_count: Book.where({user_id: user.id.to_s}).count.to_s
       }
     end
     friends = users.select do |friend|
