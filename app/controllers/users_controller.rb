@@ -99,14 +99,14 @@ class UsersController < ApplicationController
 
     users = @user.group.users.map do |user|
       {
-          friend_id: user.id,
+          friend_id: user.id.to_s,
           friend_name: user.user_name,
           friend_email: user.email,
           book_count: Book.where({user_id: user_id}).count.to_s
       }
     end
     friends = users.select do |friend|
-      friend[:friend_id].to_s != user_id
+      friend[:friend_id] != user_id
     end
 
     results = {user_id: user_id, friends: friends}
