@@ -89,20 +89,28 @@ class UsersController < ApplicationController
     @user = User.find(user_id)
     if @user.nil?
       render json: @user.errors, status: 404
-    else
-      friends = @user.group.users.map do |user|
-        if user.id != user_id
-          {
-              friend_name: user.user_name,
-              friend_email: user.email,
-              book_count: Book.where({user_id: user_id}).count.to_s
-          }
-        end
-      end
-
-      results = {user_id: user_id, friends: friends}
-      render json: results
+      return
     end
+
+    if @user.group.nil?
+      render json: {error: "No group for personal email."}, status: 404
+      return
+    end
+
+    users = @user.group.users.map do |user|
+      {
+          friend_id: user.id,
+          friend_name: user.user_name,
+          friend_email: user.email,
+          book_count: Book.where({user_id: user_id}).count.to_s
+      }
+    end
+    friends = users.select do |friend|
+      friend[:friend_id].to_s != user_id
+    end
+
+    results = {user_id: user_id, friends: friends}
+    render json: results
   end
 
   private
