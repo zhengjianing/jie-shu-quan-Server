@@ -99,18 +99,20 @@ class BooksController < ApplicationController
     end
 
     friends = all_people_has_book.select do |people|
-       people.group != nil && people.group.group_name == user.group.group_name && people.id.to_s != params[:user_id]
+       people.group != nil && people.group.group_name == user.group.group_name
     end
 
     friends_result = friends.map do |friend|
       {
+          friend_id: friend.id.to_s,
           friend_name: friend.user_name,
           friend_email: friend.email,
+          book_count: Book.where({user_id: friend.id.to_s}).count.to_s,
           available: Book.where({douban_book_id: params[:douban_book_id], user_id: friend.id.to_s}).first.available
       }
     end
 
-    results = {douban_book_id: params[:douban_book_id], friends_has_this_book: friends_result}
+    results = {douban_book_id: params[:douban_book_id], friends: friends_result}
     render json: results
   end
 
