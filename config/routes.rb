@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   put 'remove_book' => "books#remove"
   put 'change_status' => "books#update"
 
-  get 'users_by_book/:douban_book_id' => 'books#get_users_by_book', :as => :get_users
+  get 'friendsWithBook/:douban_book_id/forUser/:user_id' => 'books#get_friends_with_book_for_user', :as => :get_users
 
 # groups routes
   get 'groups/:password' => 'groups#index'

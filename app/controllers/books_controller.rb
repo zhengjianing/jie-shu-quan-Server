@@ -79,21 +79,38 @@ class BooksController < ApplicationController
     end
   end
 
-  # GET /users_by_book/123
-  def get_users_by_book
-    douban_book_id = params[:douban_book_id]
-    @books = Book.where({douban_book_id: douban_book_id})
-
-    if @books.empty?
-      render json: {error: "No book with douban_book_id: #{douban_book_id} found!"}, status: 404
+  # GET /friendsWithBook/:douban_book_id/forUser/:user_id
+  def get_friends_with_book_for_user
+    user = User.find(params[:user_id])
+    if user.nil? || user.group.nil?
+      render json: {error: "No user or group found!"}, status: 404
       return
     end
 
-    users = @books.map do |book|
-      {user_id: book.user_id,
-       available: book.available}
+    @books = Book.where({douban_book_id: params[:douban_book_id]})
+    if @books.empty?
+      render json: {error: "No book with douban_book_id: #{params[:douban_book_id]} found!"}, status: 404
+      return
     end
-    results = {douban_book_id: douban_book_id, users: users}
+
+    all_people_has_book = []
+    @books.each do |book|
+      all_people_has_book << User.find(book.user_id)
+    end
+
+    friends = all_people_has_book.select do |people|
+       people.group != nil && people.group.group_name == user.group.group_name && people.id.to_s != params[:user_id]
+    end
+
+    friends_result = friends.map do |friend|
+      {
+          friend_name: friend.user_name,
+          friend_email: friend.email,
+          available: Book.where({douban_book_id: params[:douban_book_id], user_id: friend.id.to_s}).first.available
+      }
+    end
+
+    results = {douban_book_id: params[:douban_book_id], friends_has_this_book: friends_result}
     render json: results
   end
 
@@ -101,7 +118,7 @@ class BooksController < ApplicationController
 
   def book_params
     params.require(:book).permit(:douban_book_id, :user_id, :available, :name, :authors, :image_href,
-    :description, :author_info, :price, :publisher, :publish_date)
+                                 :description, :author_info, :price, :publisher, :publish_date)
   end
 
   def has_no_permission?(user_id, access_token)
