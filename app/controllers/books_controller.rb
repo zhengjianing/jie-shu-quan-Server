@@ -99,7 +99,7 @@ class BooksController < ApplicationController
     end
 
     friends = all_people_has_book.select do |people|
-       people.group != nil && people.group.group_name == user.group.group_name
+       people.group != nil && people.group.group_name == user.group.group_name && people.id.to_s != params[:user_id]
     end
 
     friends_result = friends.map do |friend|
