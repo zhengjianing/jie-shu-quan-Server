@@ -22,11 +22,11 @@ ActiveRecord::Schema.define(version: 20140915132851) do
     t.string   "name"
     t.string   "authors"
     t.string   "image_href"
-    t.string   "author_info"
     t.string   "price"
     t.string   "publisher"
     t.string   "publish_date"
     t.text     "authorInfo"
+    t.text     "author_info"
     t.text     "description"
   end
 
