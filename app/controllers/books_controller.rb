@@ -89,7 +89,7 @@ class BooksController < ApplicationController
 
     @books = Book.where({douban_book_id: params[:douban_book_id]})
     if @books.empty?
-      render json: {error: "No book with douban_book_id: #{params[:douban_book_id]} found!"}, status: 404
+      render json: {douban_book_id: params[:douban_book_id], friends: []}
       return
     end
 
