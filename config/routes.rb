@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   post 'login' => 'users#login'
   post 'find_password' => 'users#find_password'
 
+  post 'upload_avatar' => 'users#upload_avatar'
+
   get 'books_by_user/:user_id' => 'users#get_books_by_user', :as => :get_books
   get 'friends_by_user/:user_id' => 'users#get_friends_by_user', :as => :get_friends
 

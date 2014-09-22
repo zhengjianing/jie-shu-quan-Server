@@ -68,6 +68,15 @@ class UsersController < ApplicationController
     end
   end
 
+  # POST /upload_avatar
+  def upload_avatar
+    p '---------------- upload_avatar ---------------- '
+    p params
+    p '---------------- upload_avatar ---------------- '
+
+    render json: {result: "uploaded success!"}
+  end
+
 # GET /books_by_user/123
   def get_books_by_user
     user_id = params[:user_id]
