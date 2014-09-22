@@ -70,6 +70,11 @@ class UsersController < ApplicationController
 
   # POST /upload_avatar
   def upload_avatar
+    if has_no_permission?(params[:user_id], params[:access_token])
+      render json: {error: "User authentication failed."}, status: :unauthorized
+      return
+    end
+
     uploaded_io = params[:avatar_file]
     if !uploaded_io.nil? && uploaded_io.content_type.match('image')
       File.open(Rails.root.join('public', uploaded_io.original_filename), 'wb') do |f|
@@ -154,6 +159,10 @@ class UsersController < ApplicationController
 
   def is_a_personal_email? name
     ['126', '163', 'gmail', 'qq', 'sina', 'yahoo', 'sohu'].include?(name)
+  end
+
+  def has_no_permission?(user_id, access_token)
+    User.where({id: user_id, access_token: access_token}).empty?
   end
 
 end
