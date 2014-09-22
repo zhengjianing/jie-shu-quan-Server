@@ -70,11 +70,15 @@ class UsersController < ApplicationController
 
   # POST /upload_avatar
   def upload_avatar
-    p '---------------- upload_avatar ---------------- '
-    p params
-    p '---------------- upload_avatar ---------------- '
-
-    render json: {result: "uploaded success!"}
+    uploaded_io = params[:avatar_file]
+    if !uploaded_io.nil? && uploaded_io.content_type.match('image')
+      File.open(Rails.root.join('public', uploaded_io.original_filename), 'wb') do |f|
+        f.write(uploaded_io.read)
+      end
+      render json: {result: "uploaded success!"}
+    else
+      render json: {result: "uploaded fail!"}, status: 500
+    end
   end
 
 # GET /books_by_user/123
