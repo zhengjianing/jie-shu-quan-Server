@@ -75,6 +75,11 @@ class UsersController < ApplicationController
       File.open(Rails.root.join('public', uploaded_io.original_filename), 'wb') do |f|
         f.write(uploaded_io.read)
       end
+
+      p '--------------------'
+      p Rails.root.join('public', uploaded_io.original_filename)
+      '/Users/jnzheng/Rails/duShu/public/userAvatar-1.png'
+      
       render json: {result: "uploaded success!"}
     else
       render json: {result: "uploaded fail!"}, status: 500
