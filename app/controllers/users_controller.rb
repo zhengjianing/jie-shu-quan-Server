@@ -100,6 +100,18 @@ class UsersController < ApplicationController
     render json: {result: "Change username success!"}
   end
 
+# POST /change_location
+  def change_location
+    if has_no_permission?(params[:user_id], params[:access_token])
+      render json: {error: "User authentication failed."}, status: :unauthorized
+      return
+    end
+
+    @user = User.find(params[:user_id])
+    @user.location = params[:location]
+    @user.save!
+    render json: {result: "Change location success!"}
+  end
 
 # GET /books_by_user/123
   def get_books_by_user
