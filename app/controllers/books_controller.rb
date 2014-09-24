@@ -107,6 +107,7 @@ class BooksController < ApplicationController
           friend_id: friend.id.to_s,
           friend_name: friend.user_name,
           friend_email: friend.email,
+          friend_location: friend.location,
           book_count: Book.where({user_id: friend.id.to_s}).count.to_s,
           available: Book.where({douban_book_id: params[:douban_book_id], user_id: friend.id.to_s}).first.available
       }
