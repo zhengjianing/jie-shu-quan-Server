@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     end
 
     if @user.save
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: "0", friend_count: @friend_count.to_s, access_token: @user.access_token, group_name: @group_name}
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, user_location: @user.location, book_count: "0", friend_count: @friend_count.to_s, access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
     else
       group_name = @user.group.nil? ? "" : @user.group.group_name
       friend_count = @user.group.nil? ? 0 : @user.group.users.size - 1
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, friend_count: friend_count.to_s, access_token: @user.access_token, group_name: group_name}
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, user_location: @user.location, book_count: Book.where({user_id: @user.id.to_s}).count.to_s, friend_count: friend_count.to_s, access_token: @user.access_token, group_name: group_name}
     end
   end
 
@@ -148,6 +148,7 @@ class UsersController < ApplicationController
           friend_id: user.id.to_s,
           friend_name: user.user_name,
           friend_email: user.email,
+          friend_location: user.location,
           book_count: Book.where({user_id: user.id.to_s}).count.to_s
       }
     end
@@ -163,7 +164,7 @@ class UsersController < ApplicationController
 
 # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:user_name, :email, :password).merge(access_token: random_string)
+    params.require(:user).permit(:user_name, :email, :password, :location).merge(access_token: random_string)
   end
 
   def random_string
