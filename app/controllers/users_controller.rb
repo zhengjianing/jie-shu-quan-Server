@@ -10,6 +10,7 @@ class UsersController < ApplicationController
             user_id: user.id,
             user_name: user.user_name,
             email: user.email,
+            location: user.location,
             group_name: group_name,
             access_token: user.access_token
         }

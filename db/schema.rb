@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140915132851) do
+ActiveRecord::Schema.define(version: 20140924030935) do
 
   create_table "books", force: true do |t|
     t.string   "douban_book_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20140915132851) do
     t.datetime "updated_at"
     t.string   "access_token"
     t.integer  "group_id"
+    t.string   "location"
   end
 
 end
