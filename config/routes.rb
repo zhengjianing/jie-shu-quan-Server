@@ -27,6 +27,9 @@ Rails.application.routes.draw do
 # groups routes
   get 'groups/:password' => 'groups#index'
 
+# comments routes
+  post 'comments/create' => 'comments#create'
+  get 'comments_for_book/:douban_book_id' => 'comments#comments_for_book'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
