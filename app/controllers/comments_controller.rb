@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
     comments = Comment.where({douban_book_id: params[:douban_book_id]}).map do |comment|
       {
           user_name: comment.user_name,
+          comment_date: comment.created_at.time.strftime('%Y-%m-%d'),
           content: comment.content
       }
     end
