@@ -78,7 +78,7 @@ class UsersController < ApplicationController
 
     uploaded_io = params[:avatar_file]
     if !uploaded_io.nil? && uploaded_io.content_type.match('image')
-      File.open(Rails.root.join('public', uploaded_io.original_filename), 'wb') do |f|
+      File.open(Rails.root.join('app/assets/images', uploaded_io.original_filename), 'wb') do |f|
         f.write(uploaded_io.read)
       end
 
