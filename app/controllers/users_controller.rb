@@ -23,20 +23,20 @@ class UsersController < ApplicationController
 
   # POST /register
   def register
-    @group = get_or_create_group_by_email(user_params[:email])
+    @group = get_or_create_group_by_email(params[:email])
 
     if @group.nil?
-      @user = User.new(user_params)
+      @user = User.new({email: params[:email], password: params[:password], user_name: "", phone_number: "", location: "", access_token: random_string})
       @group_name = ""
       @friend_count = 0
     else
-      @user = @group.users.create(user_params)
+      @user = @group.users.create({email: params[:email], password: params[:password], user_name: "", phone_number: "", location: "", access_token: random_string})
       @group_name = @user.group.group_name
       @friend_count = @user.group.users.size - 1
     end
 
     if @user.save
-      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, location: @user.location, book_count: "0", friend_count: @friend_count.to_s, access_token: @user.access_token, group_name: @group_name}
+      render json: {user_id: @user.id.to_s, user_name: @user.user_name, user_email: @user.email, location: @user.location, phone_number: @user.phone_number , book_count: "0", friend_count: @friend_count.to_s, access_token: @user.access_token, group_name: @group_name}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
